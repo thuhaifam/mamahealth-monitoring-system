@@ -1,0 +1,130 @@
+.stat-card-container {
+  background: var(--dark-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.stat-card-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px rgba(14, 165, 233, 0.08);
+}
+
+.stat-card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-card-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.stat-card-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-main);
+}
+
+.stat-card-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.stat-card-icon-wrapper {
+  font-size: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: transform 0.3s ease;
+}
+
+.stat-card-container:hover .stat-card-icon-wrapper {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Variants */
+.stat-card-primary::before {
+  background: var(--primary);
+}
+.stat-card-primary .stat-card-icon-wrapper {
+  color: var(--primary);
+}
+.stat-card-primary:hover {
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.stat-card-secondary::before {
+  background: var(--secondary);
+}
+.stat-card-secondary .stat-card-icon-wrapper {
+  color: var(--secondary);
+}
+.stat-card-secondary:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.stat-card-success::before {
+  background: var(--success);
+}
+.stat-card-success .stat-card-icon-wrapper {
+  color: var(--success);
+}
+.stat-card-success:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.stat-card-warning::before {
+  background: var(--warning);
+}
+.stat-card-warning .stat-card-icon-wrapper {
+  color: var(--warning);
+}
+.stat-card-warning:hover {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.stat-card-danger::before {
+  background: var(--danger);
+}
+.stat-card-danger .stat-card-icon-wrapper {
+  color: var(--danger);
+}
+.stat-card-danger:hover {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.stat-card-info::before {
+  background: var(--info);
+}
+.stat-card-info .stat-card-icon-wrapper {
+  color: var(--info);
+}
+.stat-card-info:hover {
+  border-color: rgba(6, 182, 212, 0.3);
+}
