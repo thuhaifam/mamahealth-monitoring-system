@@ -8,7 +8,6 @@ import StatCard from '../../components/common/StatCard.jsx'
 const AdminDashboard = () => {
   const navigate = useNavigate()
   const [dashboard, setDashboard] = useState(null)
-  const [activities, setActivities] = useState([])
   const [loading, setLoading] = useState(true)
 
   const loadDashboard = async () => {
@@ -19,11 +18,6 @@ const AdminDashboard = () => {
         setDashboard(dashRes.data.data)
       }
 
-      // 2. Fetch recent activities
-      const actRes = await API.get('/admin/activities')
-      if (actRes.data && actRes.data.success) {
-        setActivities(actRes.data.data)
-      }
     } catch (error) {
       console.error(error)
       toast.error('Failed to load admin dashboard data.')
@@ -125,47 +119,7 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Recent Activities */}
-      <div className="row">
-        <div className="col-12">
-          <div className="premium-card">
-            <div className="d-flex justify-content-between align-items-center mb-3 border-bottom border-color pb-2">
-              <h3 className="h5 text-white mb-0" style={{ fontFamily: 'Outfit' }}>Recent Doctor Activities</h3>
-              <button className="btn btn-sm btn-secondary-custom" onClick={() => navigate('/admin/activities')}>
-                View Audit Logs
-              </button>
-            </div>
 
-            {activities.length > 0 ? (
-              <div className="table-responsive">
-                <table className="table table-custom mb-0">
-                  <thead>
-                    <tr>
-                      <th>Activity Action</th>
-                      <th>Performed By (Doctor)</th>
-                      <th>Timestamp</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {activities.slice(0, 5).map((act, idx) => (
-                      <tr key={idx}>
-                        <td className="text-white fw-bold">{act.activity}</td>
-                        <td>{act.performedBy}</td>
-                        <td>{new Date(act.createdAt).toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div className="text-center text-muted py-4">
-                <FaClipboardList size={36} className="mb-2 opacity-30" />
-                <div>No recent system activity logged.</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
 
     </div>
   )

@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { 
-  FaPlus, 
-  FaCalendarCheck, 
   FaPills, 
   FaHeartbeat, 
   FaThermometerHalf, 
@@ -16,7 +14,6 @@ import StatCard from '../../components/common/StatCard.jsx'
 const MotherDashboard = () => {
   const navigate = useNavigate()
   const [profile, setProfile] = useState(null)
-  const [nextAppointment, setNextAppointment] = useState(null)
   const [medications, setMedications] = useState([])
   const [recoveryHistory, setRecoveryHistory] = useState([])
   const [loading, setLoading] = useState(true)
@@ -46,15 +43,7 @@ const MotherDashboard = () => {
         return
       }
 
-      // 2. Fetch next appointment
-      try {
-        const appRes = await API.get('/appointments/next')
-        if (appRes.data && appRes.data.success && appRes.data.data) {
-          setNextAppointment(appRes.data.data)
-        }
-      } catch (err) {
-        console.log('No upcoming appointment or error.', err)
-      }
+
 
       // 3. Fetch medications
       try {
@@ -165,13 +154,6 @@ const MotherDashboard = () => {
           <h1 className="h3 text-white mb-0" style={{ fontFamily: 'Outfit' }}>Hello, {profile?.fullName}!</h1>
           <span className="text-muted small">Here is your postpartum recovery monitoring summary</span>
         </div>
-        <button 
-          className="btn btn-primary-custom d-flex align-items-center gap-2"
-          onClick={() => navigate('/mother/recovery')}
-        >
-          <FaPlus />
-          <span>Log Daily Recovery</span>
-        </button>
       </div>
 
       {/* Stats Cards Row */}
@@ -214,150 +196,7 @@ const MotherDashboard = () => {
         </div>
       </div>
 
-      <div className="row g-4 mb-4">
-        {/* Recovery Chart */}
-        <div className="col-lg-8">
-          <div className="premium-card h-100">
-            {recoveryHistory.length > 0 ? (
-              <div className="table-responsive">
-                <table className="table table-custom mb-0">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Pain Level</th>
-                      <th>Temp (°C)</th>
-                      <th>Wound</th>
-                      <th>Bleeding</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[...recoveryHistory].reverse().slice(0, 5).map((rec, index) => (
-                      <tr key={index}>
-                        <td className="text-white fw-bold">{rec.recordDate}</td>
-                        <td>
-                          <span className={`badge ${rec.painLevel > 6 ? 'bg-danger' : 'bg-success'}`}>
-                            {rec.painLevel}/10
-                          </span>
-                        </td>
-                        <td>{rec.bodyTemperature}°C</td>
-                        <td>
-                          <span className={`badge ${rec.woundCondition === 'NORMAL' ? 'bg-success' : 'bg-danger'}`}>
-                            {rec.woundCondition}
-                          </span>
-                        </td>
-                        <td>{rec.bleedingLevel}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div className="d-flex flex-column align-items-center justify-content-center text-muted" style={{ height: '200px' }}>
-                <FaHeartbeat size={48} className="mb-3 opacity-30" />
-                <span>No recovery records logged yet. Begin logging to see your reports!</span>
-              </div>
-            )}
-          </div>
-        </div>
 
-        {/* Next Appointment Card */}
-        <div className="col-lg-4">
-          <div className="premium-card h-100 d-flex flex-column justify-content-between">
-            <div>
-              <h3 className="h5 text-white mb-3" style={{ fontFamily: 'Outfit' }}>Upcoming Appointment</h3>
-              {nextAppointment ? (
-                <div className="bg-white bg-opacity-5 p-3 rounded-3 border border-color mb-3">
-                  <div className="d-flex align-items-center gap-3 mb-2">
-                    <FaCalendarCheck size={24} className="text-secondary" />
-                    <div>
-                      <div className="text-white fw-bold">{nextAppointment.purpose}</div>
-                      <div className="text-muted small">{nextAppointment.appointmentDate} at {nextAppointment.appointmentTime}</div>
-                    </div>
-                  </div>
-                  <hr className="border-color my-2" />
-                  <div className="small text-muted">
-                    <div><strong>Doctor:</strong> {nextAppointment.doctorName || 'Assigned Specialist'}</div>
-                    <div><strong>Hospital:</strong> {nextAppointment.hospitalName || 'Clinic Center'}</div>
-                  </div>
-                  {nextAppointment.notes && (
-                    <div className="mt-2 p-2 bg-black bg-opacity-20 rounded text-muted small">
-                      {nextAppointment.notes}
-                    </div>
-                  )}
-                  {nextAppointment.status === 'SCHEDULED' && (
-                    <button 
-                      className="btn btn-sm btn-primary-custom mt-3 w-100"
-                      onClick={() => navigate('/mother/appointment')}
-                    >
-                      Confirm Attendance
-                    </button>
-                  )}
-                  {nextAppointment.status === 'CONFIRMED' && (
-                    <div className="badge bg-success w-100 py-2 mt-3">Attendance Confirmed</div>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center text-muted py-4">
-                  <FaCalendarCheck size={36} className="mb-2 opacity-30" />
-                  <div>No scheduled appointments.</div>
-                </div>
-              )}
-            </div>
-            
-            <Link to="/mother/appointment" className="btn btn-secondary-custom w-100">
-              View All Appointments
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Medications Quick List */}
-      <div className="row g-4">
-        <div className="col-md-12">
-          <div className="premium-card">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h3 className="h5 text-white mb-0" style={{ fontFamily: 'Outfit' }}>Today's Medications</h3>
-              <Link to="/mother/medication" className="text-decoration-none small" style={{ color: 'var(--primary-light)' }}>
-                Manage Medications
-              </Link>
-            </div>
-            
-            {medications.length > 0 ? (
-              <div className="table-responsive">
-                <table className="table table-custom mb-0">
-                  <thead>
-                    <tr>
-                      <th>Medication Name</th>
-                      <th>Dosage & Frequency</th>
-                      <th>Instructions</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {medications.slice(0, 3).map((med, index) => (
-                      <tr key={index}>
-                        <td className="text-white fw-bold">{med.name}</td>
-                        <td>{med.dosage} — {med.frequency}</td>
-                        <td>{med.instructions || 'Take as directed'}</td>
-                        <td>
-                          <span className={`badge ${med.status === 'COMPLETED' ? 'bg-success' : 'bg-warning text-dark'}`}>
-                            {med.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div className="text-center text-muted py-4">
-                <FaPills size={36} className="mb-2 opacity-30" />
-                <div>No medications prescribed.</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
 
     </div>
   )

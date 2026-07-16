@@ -11,9 +11,11 @@ const CreateMedication = () => {
 
   const [mothers, setMothers] = useState([])
   const [motherId, setMotherId] = useState(preSelectedMotherId || '')
-  const [name, setName] = useState('')
+  const [medicationName, setMedicationName] = useState('')
   const [dosage, setDosage] = useState('')
   const [frequency, setFrequency] = useState('')
+  const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0])
+  const [endDate, setEndDate] = useState(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
   const [instructions, setInstructions] = useState('')
   const [loading, setLoading] = useState(false)
   const [fetchingMothers, setFetchingMothers] = useState(true)
@@ -38,10 +40,69 @@ const CreateMedication = () => {
     fetchMothers()
   }, [preSelectedMotherId])
 
+  const validateForm = () => {
+    const textRegex = /^[A-Za-z0-9 .,'()\-]+$/
+    const freqRegex = /^[A-Za-z0-9 /,.'()\-]+$/
+    const instructionsRegex = /^[A-Za-z0-9 .,'()\-]*$/
+
+    if (!motherId) {
+      toast.warning('Please select a mother.')
+      return false
+    }
+    if (!medicationName || medicationName.trim() === '') {
+      toast.warning('Medication name is required.')
+      return false
+    }
+    if (!textRegex.test(medicationName)) {
+      toast.warning('Medication name contains invalid characters.')
+      return false
+    }
+    if (!dosage || dosage.trim() === '') {
+      toast.warning('Dosage is required.')
+      return false
+    }
+    if (!textRegex.test(dosage)) {
+      toast.warning('Dosage contains invalid characters.')
+      return false
+    }
+    if (!frequency || frequency.trim() === '') {
+      toast.warning('Frequency is required.')
+      return false
+    }
+    if (!freqRegex.test(frequency)) {
+      toast.warning('Frequency contains invalid characters.')
+      return false
+    }
+    if (!startDate) {
+      toast.warning('Start date is required.')
+      return false
+    }
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const selectedStart = new Date(startDate)
+    if (selectedStart < today) {
+      toast.warning('Start date cannot be in the past.')
+      return false
+    }
+    if (!endDate) {
+      toast.warning('End date is required.')
+      return false
+    }
+    const selectedEnd = new Date(endDate)
+    if (selectedEnd < selectedStart) {
+      toast.warning('End date cannot be before the start date.')
+      return false
+    }
+    if (instructions && !instructionsRegex.test(instructions)) {
+      toast.warning('Instructions contain invalid characters.')
+      return false
+    }
+    return true
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!motherId || !name || !dosage || !frequency) {
-      toast.warning('Please fill in all required fields.')
+    if (!validateForm()) {
       return
     }
 
@@ -49,9 +110,11 @@ const CreateMedication = () => {
     try {
       const payload = {
         motherId: parseInt(motherId),
-        name,
+        medicationName,
         dosage,
         frequency,
+        startDate,
+        endDate,
         instructions,
       }
       const response = await API.post('/medications', payload)
@@ -67,7 +130,15 @@ const CreateMedication = () => {
       }
     } catch (error) {
       console.error(error)
-      const errorMsg = error.response?.data?.message || 'Error prescribing medication.'
+      let errorMsg = 'Error prescribing medication.'
+      if (error.response?.data) {
+        const data = error.response.data
+        if (data.errors && typeof data.errors === 'object') {
+          errorMsg = Object.values(data.errors).join(' ')
+        } else if (data.message) {
+          errorMsg = data.message
+        }
+      }
       toast.error(errorMsg)
     } finally {
       setLoading(false)
@@ -131,8 +202,8 @@ const CreateMedication = () => {
                     id="med-name"
                     className="form-control form-control-custom"
                     placeholder="e.g. Paracetamol"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={medicationName}
+                    onChange={(e) => setMedicationName(e.target.value)}
                     required
                   />
                 </div>
@@ -161,6 +232,32 @@ const CreateMedication = () => {
                     placeholder="e.g. Twice daily"
                     value={frequency}
                     onChange={(e) => setFrequency(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* Start Date */}
+                <div className="col-md-6">
+                  <label className="form-label text-muted small" htmlFor="med-start-date">Start Date</label>
+                  <input
+                    type="date"
+                    id="med-start-date"
+                    className="form-control form-control-custom"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* End Date */}
+                <div className="col-md-6">
+                  <label className="form-label text-muted small" htmlFor="med-end-date">End Date</label>
+                  <input
+                    type="date"
+                    id="med-end-date"
+                    className="form-control form-control-custom"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
                     required
                   />
                 </div>

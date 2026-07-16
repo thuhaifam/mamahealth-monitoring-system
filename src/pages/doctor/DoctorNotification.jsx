@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FaBell, FaPlus, FaTrash } from 'react-icons/fa'
 import API from '../../api.js'
+import Swal from 'sweetalert2'
 
 const DoctorNotification = () => {
   const navigate = useNavigate()
@@ -28,19 +29,32 @@ const DoctorNotification = () => {
   }, [])
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this broadcast notification?')) return
-    try {
-      const response = await API.delete(`/notifications/${id}`)
-      if (response.data && response.data.success) {
-        toast.success('Notification deleted successfully.')
-        fetchNotifications()
-      } else {
-        toast.error(response.data.message || 'Failed to delete notification.')
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Delete this broadcast notification?",
+      icon: 'warning',
+      showCancelButton: true,
+      background: '#1a152e',
+      color: '#fff',
+      confirmButtonColor: '#e11d48',
+      cancelButtonColor: '#4b5563',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await API.delete(`/notifications/${id}`)
+          if (response.data && response.data.success) {
+            toast.success('Notification deleted successfully.')
+            fetchNotifications()
+          } else {
+            toast.error(response.data.message || 'Failed to delete notification.')
+          }
+        } catch (error) {
+          console.error(error)
+          toast.error('Error deleting notification.')
+        }
       }
-    } catch (error) {
-      console.error(error)
-      toast.error('Error deleting notification.')
-    }
+    })
   }
 
   if (loading) {

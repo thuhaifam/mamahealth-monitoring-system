@@ -41,16 +41,28 @@ const CreateAppointments = () => {
   const validateForm = () => {
     const purposeRegex = /^[A-Za-z0-9 .,'()\-]+$/
     const notesRegex = /^[A-Za-z0-9 .,'()\-]*$/
-    const selectedDate = new Date(appointmentDate)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
 
     if (!motherId) {
       toast.warning('Please select a mother.')
       return false
     }
+    if (!appointmentDate) {
+      toast.warning('Appointment date is required.')
+      return false
+    }
+    const selectedDate = new Date(appointmentDate)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
     if (selectedDate < today) {
       toast.warning('Appointment date cannot be in the past.')
+      return false
+    }
+    if (!appointmentTime) {
+      toast.warning('Appointment time is required.')
+      return false
+    }
+    if (!purpose || purpose.trim() === '') {
+      toast.warning('Purpose is required.')
       return false
     }
     if (!purposeRegex.test(purpose)) {
@@ -90,7 +102,15 @@ const CreateAppointments = () => {
       }
     } catch (error) {
       console.error(error)
-      const errorMsg = error.response?.data?.message || 'Error scheduling appointment.'
+      let errorMsg = 'Error scheduling appointment.'
+      if (error.response?.data) {
+        const data = error.response.data
+        if (data.errors && typeof data.errors === 'object') {
+          errorMsg = Object.values(data.errors).join(' ')
+        } else if (data.message) {
+          errorMsg = data.message
+        }
+      }
       toast.error(errorMsg)
     } finally {
       setLoading(false)

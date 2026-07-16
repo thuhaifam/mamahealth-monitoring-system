@@ -112,12 +112,7 @@ const Appointment = () => {
                       </div>
                     </div>
 
-                    {app.notes && (
-                      <div className="p-2 bg-black bg-opacity-20 rounded text-muted small d-flex gap-2">
-                        <FaInfoCircle className="mt-1 flex-shrink-0" />
-                        <span>{app.notes}</span>
-                      </div>
-                    )}
+
                   </div>
 
                   {app.status === 'SCHEDULED' && (

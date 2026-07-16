@@ -18,7 +18,7 @@ const MotherProfile = () => {
   const [bloodGroup, setBloodGroup] = useState('')
   const [emergencyContact, setEmergencyContact] = useState('')
   const [deliveryDate, setDeliveryDate] = useState('')
-  const [hospitalName, setHospitalName] = useState('')
+  const [hospitalName, setHospitalName] = useState('Suza Hospital')
 
   const fetchProfile = async () => {
     try {
@@ -324,11 +324,12 @@ const MotherProfile = () => {
                   <input
                     type="text"
                     id="hospital-input"
-                    className="form-control form-control-custom"
+                    className="form-control form-control-custom text-white"
                     placeholder="e.g. City Maternity Hospital"
                     value={hospitalName}
                     onChange={(e) => setHospitalName(e.target.value)}
                     required
+                    disabled
                   />
                 </div>
 

@@ -10,7 +10,7 @@ const CreateDoctorProfile = () => {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [specialization, setSpecialization] = useState('')
   const [licenseNumber, setLicenseNumber] = useState('')
-  const [hospitalName, setHospitalName] = useState('')
+  const [hospitalName, setHospitalName] = useState('Suza Hospital')
   const [yearsOfExperience, setYearsOfExperience] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -153,11 +153,12 @@ const CreateDoctorProfile = () => {
                   <input
                     type="text"
                     id="doc-hospital"
-                    className="form-control form-control-custom"
+                    className="form-control form-control-custom text-white"
                     placeholder="e.g. City General Hospital"
                     value={hospitalName}
                     onChange={(e) => setHospitalName(e.target.value)}
                     required
+                    disabled
                   />
                 </div>
 

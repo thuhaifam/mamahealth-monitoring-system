@@ -79,7 +79,7 @@ const Medication = () => {
                     <div className="bg-white bg-opacity-5 p-3 rounded-3 border border-color d-flex flex-column justify-content-between h-100">
                       <div>
                         <div className="d-flex justify-content-between align-items-start">
-                          <h4 className="h6 text-white mb-1 fw-bold">{med.name}</h4>
+                          <h4 className="h6 text-white mb-1 fw-bold">{med.medicationName}</h4>
                           <span className="badge bg-warning text-dark">Active</span>
                         </div>
                         <div className="text-muted small mb-2">
@@ -91,12 +91,7 @@ const Medication = () => {
                         <div className="text-muted small mb-2">
                           <strong>Prescribed By:</strong> {med.doctorName || 'Doctor'}
                         </div>
-                        {med.instructions && (
-                          <div className="p-2 bg-black bg-opacity-20 rounded text-muted small d-flex gap-2 mt-2">
-                            <FaInfoCircle className="mt-1 flex-shrink-0" />
-                            <span>{med.instructions}</span>
-                          </div>
-                        )}
+
                       </div>
                       <button
                         className="btn btn-sm btn-primary-custom w-100 mt-3 d-flex align-items-center justify-content-center gap-2"
@@ -133,7 +128,7 @@ const Medication = () => {
                   <div key={med.id} className="col-12">
                     <div className="bg-white bg-opacity-5 p-3 rounded-3 border border-color opacity-75">
                       <div className="d-flex justify-content-between align-items-start mb-2">
-                        <h4 className="h6 text-white mb-0 fw-bold">{med.name}</h4>
+                        <h4 className="h6 text-white mb-0 fw-bold">{med.medicationName}</h4>
                         <span className="badge bg-success">Completed</span>
                       </div>
                       <div className="text-muted small">

@@ -14,7 +14,7 @@ const EditDoctorProfile = () => {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [specialization, setSpecialization] = useState('')
   const [licenseNumber, setLicenseNumber] = useState('')
-  const [hospitalName, setHospitalName] = useState('')
+  const [hospitalName, setHospitalName] = useState('Suza Hospital')
   const [yearsOfExperience, setYearsOfExperience] = useState('')
 
   const fetchProfile = async () => {
@@ -26,7 +26,7 @@ const EditDoctorProfile = () => {
         setPhoneNumber(data.phoneNumber)
         setSpecialization(data.specialization)
         setLicenseNumber(data.licenseNumber)
-        setHospitalName(data.hospitalName)
+        setHospitalName('Suza Hospital')
         setYearsOfExperience(data.yearsOfExperience)
       } else {
         toast.error('Profile not found.')
@@ -193,10 +193,11 @@ const EditDoctorProfile = () => {
                   <input
                     type="text"
                     id="doc-hospital-edit"
-                    className="form-control form-control-custom"
+                    className="form-control form-control-custom text-white"
                     value={hospitalName}
                     onChange={(e) => setHospitalName(e.target.value)}
                     required
+                    disabled
                   />
                 </div>
 

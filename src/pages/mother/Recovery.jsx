@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { FaHeartbeat, FaPlus, FaTrash, FaCheck, FaTimes } from 'react-icons/fa'
 import API from '../../api.js'
+import Swal from 'sweetalert2'
 import AddRecoveryModal from './AddRecoveryModal.jsx'
 
 const Recovery = () => {
@@ -30,20 +31,32 @@ const Recovery = () => {
   }, [])
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this recovery record?')) return
-
-    try {
-      const response = await API.delete(`/recovery/${id}`)
-      if (response.data && response.data.success) {
-        toast.success('Record deleted successfully.')
-        fetchHistory()
-      } else {
-        toast.error(response.data.message || 'Failed to delete record.')
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Are you sure you want to delete this recovery record?",
+      icon: 'warning',
+      showCancelButton: true,
+      background: '#1a152e',
+      color: '#fff',
+      confirmButtonColor: '#e11d48',
+      cancelButtonColor: '#4b5563',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await API.delete(`/recovery/${id}`)
+          if (response.data && response.data.success) {
+            toast.success('Record deleted successfully.')
+            fetchHistory()
+          } else {
+            toast.error(response.data.message || 'Failed to delete record.')
+          }
+        } catch (error) {
+          console.error(error)
+          toast.error('Error deleting record.')
+        }
       }
-    } catch (error) {
-      console.error(error)
-      toast.error('Error deleting record.')
-    }
+    })
   }
 
   if (loading) {

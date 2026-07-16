@@ -8,10 +8,13 @@ const EditMedication = () => {
   const navigate = useNavigate()
   const { id } = useParams()
 
+  const [motherId, setMotherId] = useState(0)
   const [motherName, setMotherName] = useState('')
   const [name, setName] = useState('')
   const [dosage, setDosage] = useState('')
   const [frequency, setFrequency] = useState('')
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
   const [instructions, setInstructions] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -22,10 +25,13 @@ const EditMedication = () => {
         const response = await API.get(`/medications/${id}`)
         if (response.data && response.data.success && response.data.data) {
           const med = response.data.data
+          setMotherId(med.motherId || 0)
           setMotherName(med.motherName)
-          setName(med.name)
+          setName(med.medicationName || '')
           setDosage(med.dosage)
           setFrequency(med.frequency)
+          setStartDate(med.startDate || '')
+          setEndDate(med.endDate || '')
           setInstructions(med.instructions || '')
         }
       } catch (error) {
@@ -37,22 +43,82 @@ const EditMedication = () => {
       }
     }
     fetchMedication()
-  }, [id])
+  }, [id, navigate])
+
+  const validateForm = () => {
+    const textRegex = /^[A-Za-z0-9 .,'()\-]+$/
+    const freqRegex = /^[A-Za-z0-9 /,.'()\-]+$/
+    const instructionsRegex = /^[A-Za-z0-9 .,'()\-]*$/
+
+    if (!name || name.trim() === '') {
+      toast.warning('Medication name is required.')
+      return false
+    }
+    if (!textRegex.test(name)) {
+      toast.warning('Medication name contains invalid characters.')
+      return false
+    }
+    if (!dosage || dosage.trim() === '') {
+      toast.warning('Dosage is required.')
+      return false
+    }
+    if (!textRegex.test(dosage)) {
+      toast.warning('Dosage contains invalid characters.')
+      return false
+    }
+    if (!frequency || frequency.trim() === '') {
+      toast.warning('Frequency is required.')
+      return false
+    }
+    if (!freqRegex.test(frequency)) {
+      toast.warning('Frequency contains invalid characters.')
+      return false
+    }
+    if (!startDate) {
+      toast.warning('Start date is required.')
+      return false
+    }
+    // Note: for edit, we might let them save start dates in the past if they were already set in the past,
+    // but the backend uses @FutureOrPresent for CreateMedicationRequest. However, on update, Spring MVC checks validation again.
+    // If the medication started in the past, editing might need the start date, but let's check it anyway.
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const selectedStart = new Date(startDate)
+    if (selectedStart < today) {
+      toast.warning('Start date cannot be in the past.')
+      return false
+    }
+    if (!endDate) {
+      toast.warning('End date is required.')
+      return false
+    }
+    const selectedEnd = new Date(endDate)
+    if (selectedEnd < selectedStart) {
+      toast.warning('End date cannot be before the start date.')
+      return false
+    }
+    if (instructions && !instructionsRegex.test(instructions)) {
+      toast.warning('Instructions contain invalid characters.')
+      return false
+    }
+    return true
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!name || !dosage || !frequency) {
-      toast.warning('Please fill in all required fields.')
+    if (!validateForm()) {
       return
     }
 
     setSaving(true)
     try {
       const payload = {
-        motherId: 0, // Backend Mapper ignores this for update or it is retrieved from existing record
-        name,
+        motherId: motherId || 0,
+        medicationName: name,
         dosage,
         frequency,
+        startDate,
+        endDate,
         instructions,
       }
       const response = await API.put(`/medications/${id}`, payload)
@@ -64,7 +130,15 @@ const EditMedication = () => {
       }
     } catch (error) {
       console.error(error)
-      const errorMsg = error.response?.data?.message || 'Error updating medication.'
+      let errorMsg = 'Error updating medication.'
+      if (error.response?.data) {
+        const data = error.response.data
+        if (data.errors && typeof data.errors === 'object') {
+          errorMsg = Object.values(data.errors).join(' ')
+        } else if (data.message) {
+          errorMsg = data.message
+        }
+      }
       toast.error(errorMsg)
     } finally {
       setSaving(false)
@@ -150,6 +224,32 @@ const EditMedication = () => {
                     className="form-control form-control-custom"
                     value={frequency}
                     onChange={(e) => setFrequency(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* Start Date */}
+                <div className="col-md-6">
+                  <label className="form-label text-muted small" htmlFor="edit-med-start-date">Start Date</label>
+                  <input
+                    type="date"
+                    id="edit-med-start-date"
+                    className="form-control form-control-custom"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* End Date */}
+                <div className="col-md-6">
+                  <label className="form-label text-muted small" htmlFor="edit-med-end-date">End Date</label>
+                  <input
+                    type="date"
+                    id="edit-med-end-date"
+                    className="form-control form-control-custom"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
                     required
                   />
                 </div>

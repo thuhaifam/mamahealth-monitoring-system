@@ -17,6 +17,7 @@ import {
   FaFileAlt
 } from 'react-icons/fa'
 import API from '../../api.js'
+import Swal from 'sweetalert2'
 
 const MotherDetails = () => {
   const { id } = useParams()
@@ -68,31 +69,57 @@ const MotherDetails = () => {
   }, [id])
 
   const handleDeleteMedication = async (medId) => {
-    if (!window.confirm('Delete this medication prescription?')) return
-    try {
-      const response = await API.delete(`/medications/${medId}`)
-      if (response.data && response.data.success) {
-        toast.success('Medication prescription deleted.')
-        fetchData()
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Delete this medication prescription?",
+      icon: 'warning',
+      showCancelButton: true,
+      background: '#1a152e',
+      color: '#fff',
+      confirmButtonColor: '#e11d48',
+      cancelButtonColor: '#4b5563',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await API.delete(`/medications/${medId}`)
+          if (response.data && response.data.success) {
+            toast.success('Medication prescription deleted.')
+            fetchData()
+          }
+        } catch (error) {
+          console.error(error)
+          toast.error('Failed to delete medication.')
+        }
       }
-    } catch (error) {
-      console.error(error)
-      toast.error('Failed to delete medication.')
-    }
+    })
   }
 
   const handleDeleteAppointment = async (apptId) => {
-    if (!window.confirm('Delete this scheduled appointment?')) return
-    try {
-      const response = await API.delete(`/appointments/${apptId}`)
-      if (response.data && response.data.success) {
-        toast.success('Appointment deleted.')
-        fetchData()
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Delete this scheduled appointment?",
+      icon: 'warning',
+      showCancelButton: true,
+      background: '#1a152e',
+      color: '#fff',
+      confirmButtonColor: '#e11d48',
+      cancelButtonColor: '#4b5563',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await API.delete(`/appointments/${apptId}`)
+          if (response.data && response.data.success) {
+            toast.success('Appointment deleted.')
+            fetchData()
+          }
+        } catch (error) {
+          console.error(error)
+          toast.error('Failed to delete appointment.')
+        }
       }
-    } catch (error) {
-      console.error(error)
-      toast.error('Failed to delete appointment.')
-    }
+    })
   }
 
   if (loading) {
@@ -143,9 +170,7 @@ const MotherDetails = () => {
               </div>
               <div className="col-md-4 mb-3">
                 <strong>Blood Group:</strong>
-                <div>
-                  <span className="badge bg-danger bg-opacity-20 text-danger border border-danger border-opacity-30">{mother?.bloodGroup}</span>
-                </div>
+                <div className="text-white fw-bold">{mother?.bloodGroup}</div>
               </div>
               <div className="col-md-4 mb-3">
                 <strong>Delivery Date:</strong>
@@ -281,7 +306,7 @@ const MotherDetails = () => {
                     <tbody>
                       {meds.map((med) => (
                         <tr key={med.id}>
-                          <td className="text-white fw-bold">{med.name}</td>
+                          <td className="text-white fw-bold">{med.medicationName}</td>
                           <td>{med.dosage}</td>
                           <td>{med.frequency}</td>
                           <td>{med.instructions || '-'}</td>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FaCalendarAlt, FaPlus, FaCheck, FaTimes, FaBan, FaTrash, FaEdit } from 'react-icons/fa'
 import API from '../../api.js'
+import Swal from 'sweetalert2'
 
 const ManageAppointments = () => {
   const navigate = useNavigate()
@@ -64,16 +65,29 @@ const ManageAppointments = () => {
   }
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this appointment?')) return
-    try {
-      const res = await API.delete(`/appointments/${id}`)
-      if (res.data && res.data.success) {
-        toast.success('Appointment deleted successfully.')
-        fetchAppointments()
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this appointment deletion!",
+      icon: 'warning',
+      showCancelButton: true,
+      background: '#1a152e',
+      color: '#fff',
+      confirmButtonColor: '#e11d48',
+      cancelButtonColor: '#4b5563',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await API.delete(`/appointments/${id}`)
+          if (res.data && res.data.success) {
+            toast.success('Appointment deleted successfully.')
+            fetchAppointments()
+          }
+        } catch (error) {
+          toast.error('Error deleting appointment.')
+        }
       }
-    } catch (error) {
-      toast.error('Error deleting appointment.')
-    }
+    })
   }
 
   if (loading) {

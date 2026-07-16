@@ -97,11 +97,7 @@ const Mothers = () => {
                     <td className="text-white fw-bold">{mother.fullName}</td>
                     <td>{mother.phoneNumber}</td>
                     <td>{mother.email}</td>
-                    <td>
-                      <span className="badge bg-danger bg-opacity-20 text-danger border border-danger border-opacity-30">
-                        {mother.bloodGroup}
-                      </span>
-                    </td>
+                    <td>{mother.bloodGroup}</td>
                     <td>{mother.deliveryDate}</td>
                     <td>{mother.hospitalName || '-'}</td>
                     <td className="text-end">

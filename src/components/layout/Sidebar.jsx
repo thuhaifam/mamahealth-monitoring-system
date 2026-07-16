@@ -9,8 +9,7 @@ import {
   FaUser, 
   FaUsers, 
   FaUserMd, 
-  FaChartBar, 
-  FaHistory 
+  FaChartBar
 } from 'react-icons/fa'
 
 const Sidebar = ({ isOpen, onCloseSidebar }) => {
@@ -29,8 +28,6 @@ const Sidebar = ({ isOpen, onCloseSidebar }) => {
       { path: '/doctor', label: 'Dashboard', icon: <FaHome /> },
       { path: '/doctor/profile', label: 'My Profile', icon: <FaUserMd /> },
       { path: '/doctor/mothers', label: 'Mothers (Patients)', icon: <FaUsers /> },
-      { path: '/doctor/appointments', label: 'Appointments', icon: <FaCalendarAlt /> },
-      { path: '/doctor/medications', label: 'Medications', icon: <FaPills /> },
       { path: '/doctor/notifications', label: 'Send Alerts', icon: <FaBell /> },
     ],
     ADMIN: [
@@ -38,7 +35,6 @@ const Sidebar = ({ isOpen, onCloseSidebar }) => {
       { path: '/admin/doctors', label: 'Manage Doctors', icon: <FaUserMd /> },
       { path: '/admin/mothers', label: 'Mothers List', icon: <FaUsers /> },
       { path: '/admin/reports', label: 'Analytics Reports', icon: <FaChartBar /> },
-      { path: '/admin/activities', label: 'Activity Logs', icon: <FaHistory /> },
     ]
   }
 

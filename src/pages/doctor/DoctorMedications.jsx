@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FaPills, FaPlus, FaTrash, FaEdit } from 'react-icons/fa'
 import API from '../../api.js'
+import Swal from 'sweetalert2'
 
 const DoctorMedications = () => {
   const navigate = useNavigate()
@@ -28,19 +29,32 @@ const DoctorMedications = () => {
   }, [])
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this medication prescription?')) return
-    try {
-      const response = await API.delete(`/medications/${id}`)
-      if (response.data && response.data.success) {
-        toast.success('Medication prescription deleted.')
-        fetchMedications()
-      } else {
-        toast.error(response.data.message || 'Failed to delete medication.')
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Delete this medication prescription?",
+      icon: 'warning',
+      showCancelButton: true,
+      background: '#1a152e',
+      color: '#fff',
+      confirmButtonColor: '#e11d48',
+      cancelButtonColor: '#4b5563',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await API.delete(`/medications/${id}`)
+          if (response.data && response.data.success) {
+            toast.success('Medication prescription deleted.')
+            fetchMedications()
+          } else {
+            toast.error(response.data.message || 'Failed to delete medication.')
+          }
+        } catch (error) {
+          console.error(error)
+          toast.error('Error deleting medication.')
+        }
       }
-    } catch (error) {
-      console.error(error)
-      toast.error('Error deleting medication.')
-    }
+    })
   }
 
   if (loading) {
@@ -93,7 +107,7 @@ const DoctorMedications = () => {
                 {medications.map((med) => (
                   <tr key={med.id}>
                     <td className="text-white fw-bold">{med.motherName}</td>
-                    <td className="text-white">{med.name}</td>
+                    <td className="text-white">{med.medicationName}</td>
                     <td>{med.dosage}</td>
                     <td>{med.frequency}</td>
                     <td>{med.instructions || '-'}</td>

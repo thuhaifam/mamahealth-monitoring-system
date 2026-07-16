@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FaUserMd, FaPlus, FaTrash, FaEdit, FaToggleOff } from 'react-icons/fa'
 import API from '../../api.js'
+import Swal from 'sweetalert2'
 
 const AdminDoctors = () => {
   const navigate = useNavigate()
@@ -28,35 +29,61 @@ const AdminDoctors = () => {
   }, [])
 
   const handleDeactivate = async (id) => {
-    if (!window.confirm('Are you sure you want to deactivate this doctor profile?')) return
-    try {
-      const response = await API.patch(`/admin/doctors/${id}/deactivate`)
-      if (response.data && response.data.success) {
-        toast.success('Doctor deactivated successfully.')
-        fetchDoctors()
-      } else {
-        toast.error(response.data.message || 'Failed to deactivate doctor.')
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Are you sure you want to deactivate this doctor profile?",
+      icon: 'warning',
+      showCancelButton: true,
+      background: '#1a152e',
+      color: '#fff',
+      confirmButtonColor: '#e11d48',
+      cancelButtonColor: '#4b5563',
+      confirmButtonText: 'Yes, deactivate!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await API.patch(`/admin/doctors/${id}/deactivate`)
+          if (response.data && response.data.success) {
+            toast.success('Doctor deactivated successfully.')
+            fetchDoctors()
+          } else {
+            toast.error(response.data.message || 'Failed to deactivate doctor.')
+          }
+        } catch (error) {
+          console.error(error)
+          toast.error('Error deactivating doctor.')
+        }
       }
-    } catch (error) {
-      console.error(error)
-      toast.error('Error deactivating doctor.')
-    }
+    })
   }
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete doctor? (This will fail if medical records exist)')) return
-    try {
-      const response = await API.delete(`/admin/doctors/${id}`)
-      if (response.data && response.data.success) {
-        toast.success('Doctor profile deleted successfully.')
-        fetchDoctors()
-      } else {
-        toast.error(response.data.message || 'Failed to delete doctor.')
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Delete doctor? (This will fail if medical records exist)",
+      icon: 'warning',
+      showCancelButton: true,
+      background: '#1a152e',
+      color: '#fff',
+      confirmButtonColor: '#e11d48',
+      cancelButtonColor: '#4b5563',
+      confirmButtonText: 'Yes, delete!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await API.delete(`/admin/doctors/${id}`)
+          if (response.data && response.data.success) {
+            toast.success('Doctor profile deleted successfully.')
+            fetchDoctors()
+          } else {
+            toast.error(response.data.message || 'Failed to delete doctor.')
+          }
+        } catch (error) {
+          console.error(error)
+          toast.error(error.response?.data?.message || 'Error deleting doctor. Check if records exist.')
+        }
       }
-    } catch (error) {
-      console.error(error)
-      toast.error(error.response?.data?.message || 'Error deleting doctor. Check if records exist.')
-    }
+    })
   }
 
   if (loading) {

@@ -12,7 +12,7 @@ const EditDoctor = () => {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [specialization, setSpecialization] = useState('')
   const [licenseNumber, setLicenseNumber] = useState('')
-  const [hospitalName, setHospitalName] = useState('')
+  const [hospitalName, setHospitalName] = useState('Suza Hospital')
   const [yearsOfExperience, setYearsOfExperience] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -27,7 +27,7 @@ const EditDoctor = () => {
           setPhoneNumber(doc.phoneNumber)
           setSpecialization(doc.specialization)
           setLicenseNumber(doc.licenseNumber)
-          setHospitalName(doc.hospitalName)
+          setHospitalName('Suza Hospital')
           setYearsOfExperience(doc.yearsOfExperience)
         }
       } catch (error) {
@@ -192,10 +192,11 @@ const EditDoctor = () => {
                   <input
                     type="text"
                     id="edit-doc-hospital"
-                    className="form-control form-control-custom"
+                    className="form-control form-control-custom text-white"
                     value={hospitalName}
                     onChange={(e) => setHospitalName(e.target.value)}
                     required
+                    disabled
                   />
                 </div>
 

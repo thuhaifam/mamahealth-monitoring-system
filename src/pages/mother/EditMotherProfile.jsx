@@ -17,7 +17,7 @@ const EditMotherProfile = () => {
   const [bloodGroup, setBloodGroup] = useState('')
   const [emergencyContact, setConfirmEmergencyContact] = useState('')
   const [deliveryDate, setDeliveryDate] = useState('')
-  const [hospitalName, setHospitalName] = useState('')
+  const [hospitalName, setHospitalName] = useState('Suza Hospital')
 
   const fetchProfile = async () => {
     try {
@@ -31,7 +31,7 @@ const EditMotherProfile = () => {
         setBloodGroup(data.bloodGroup)
         setConfirmEmergencyContact(data.emergencyContact)
         setDeliveryDate(data.deliveryDate)
-        setHospitalName(data.hospitalName)
+        setHospitalName('Suza Hospital')
       } else {
         toast.error('Could not load profile. Please create one first.')
         navigate('/mother/profile')
@@ -234,10 +234,11 @@ const EditMotherProfile = () => {
                   <input
                     type="text"
                     id="hospital-edit"
-                    className="form-control form-control-custom"
+                    className="form-control form-control-custom text-white"
                     value={hospitalName}
                     onChange={(e) => setHospitalName(e.target.value)}
                     required
+                    disabled
                   />
                 </div>
 
