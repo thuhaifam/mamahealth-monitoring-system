@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { FaCalendarAlt, FaPlus, FaCheck, FaTimes, FaBan, FaTrash, FaEdit } from 'react-icons/fa'
+import { FaCalendarAlt, FaPlus, FaCheck, FaTimes, FaBan, FaTrash, FaEdit, FaEye } from 'react-icons/fa'
 import API from '../../api.js'
 import Swal from 'sweetalert2'
 
@@ -181,6 +181,13 @@ const ManageAppointments = () => {
                             </button>
                           </>
                         )}
+                        <button 
+                          className="btn btn-sm btn-outline-info border-0" 
+                          onClick={() => navigate(`/doctor/appointments/${appt.id}`)}
+                          title="View Details"
+                        >
+                          <FaEye />
+                        </button>
                         <button 
                           className="btn btn-sm btn-outline-primary border-0" 
                           onClick={() => navigate(`/doctor/appointments/edit/${appt.id}`)}

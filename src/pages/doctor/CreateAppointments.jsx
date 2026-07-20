@@ -16,7 +16,7 @@ const CreateAppointments = () => {
   const [purpose, setPurpose] = useState('')
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
-  const [fetchingMothers, setFetchingMothers] = useState(true)
+  const [fetchingMo, setFetchingMothers] = useState(true)
 
   useEffect(() => {
     const fetchMothers = async () => {

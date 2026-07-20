@@ -22,6 +22,7 @@ import CreateDoctorProfile from "../pages/doctor/CreateDoctorProfile";
 import DoctorRecoveryHistory from "../pages/doctor/DoctorRecoveryHistory";
 import ManageAppointments from "../pages/doctor/ManageAppointments";
 import EditAppointment from "../pages/doctor/EditAppointment";
+import DoctorAppointmentDetails from "../pages/doctor/DoctorAppointmentDetails";
 import EditDoctorProfile from "../pages/doctor/EditDoctorProfile";
 import DoctorNotification from "../pages/doctor/DoctorNotification";
 import EditMedication from "../pages/doctor/EditMedication";
@@ -181,6 +182,11 @@ function AppRoutes() {
 <Route
     path="/doctor/appointments/edit/:id"
     element={<EditAppointment />}
+/>
+
+<Route
+    path="/doctor/appointments/:id"
+    element={<DoctorAppointmentDetails />}
 />
 
        
